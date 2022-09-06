@@ -704,7 +704,7 @@ def subplots(ts, time_array, sol1, v1, sol2, v2, average, sd):
     cta.set(xlabel='time [min]', ylabel='Tartaric Acid [g/L]')
     cta.plot(ts, sol1.CTA, 'g', label='Unoptimised')
     cta.plot(ts, sol2.CTA, 'r', label='Optimised')
-    ctaa.errorbar(time_array, average.Must_20_Tartaric_Acid, fmt='bo', yerr=sd.Must_20_Tartaric_Acid,
+    cta.errorbar(time_array, average.Must_20_Tartaric_Acid, fmt='bo', yerr=sd.Must_20_Tartaric_Acid,
                 label='Experimental',
                 elinewidth=1, capsize=2)
     cta.legend()
@@ -734,8 +734,8 @@ def subplots(ts, time_array, sol1, v1, sol2, v2, average, sd):
     tpi.legend()
     tpig.set_title('Total Phenolic Index Cap')
     tpig.set(xlabel='time [min]', ylabel='Total Phenolic Index Cap [-]')
-    tpig.plot(ts, v1.tpi_g, 'g', label='Unoptimised')
-    tpig.plot(ts, v2.tpi_g, 'r', label='Optimised')
+    tpig.plot(ts, v1.tpi_gr, 'g', label='Unoptimised')
+    tpig.plot(ts, v2.tpi_gr, 'r', label='Optimised')
     tpig.errorbar(time_array, average.Cap_20_Total_Phenolic_Index, fmt='bo', yerr=sd.Cap_20_Total_Phenolic_Index,
                  label='Experimental',
                  elinewidth=1, capsize=2)
@@ -750,21 +750,79 @@ def subplots(ts, time_array, sol1, v1, sol2, v2, average, sd):
 
     fig3, ((cagr, ctgr), (ctagr, cmagr)) = plt.subplots(2, 2)
     fig.suptitle('Cap Phenolics')
-    x.set_title('Active Biomass')
-    x.set(xlabel='time [min]', ylabel='Biomass [g/L]')
-    x.plot(ts, sol1.X, 'g', label='Unoptimised')
-    x.plot(ts, sol2.X, 'r', label='Optimised')
-    x.errorbar(time_array, average.Must_20_Biomass, fmt='bo', yerr=sd.Must_20_Biomass, label='Experimental',
+    cagr.set_title('Anthocyanins')
+    cagr.set(xlabel='time [min]', ylabel='Anthocyanins [mg/g]')
+    cagr.plot(ts, sol1.CA_GR, 'g', label='Unoptimised')
+    cagr.plot(ts, sol2.CA_GR, 'r', label='Optimised')
+    cagr.errorbar(time_array, average.Cap_20_Anthocyanins, fmt='bo', yerr=sd.Cap_20_Anthocyanins, label='Experimental',
                elinewidth=1, capsize=2)
-    x.legend()
+    cagr.legend()
+    ctgr.set_title('Tannins')
+    ctgr.set(xlabel='time [min]', ylabel='Tannins [mg/g]')
+    ctgr.plot(ts, sol1.CT_GR, 'g', label='Unoptimised')
+    ctgr.plot(ts, sol2.CT_GR, 'r', label='Optimised')
+    ctgr.errorbar(time_array, average.Cap_20_Tannins, fmt='bo', yerr=sd.Cap_20_Tannins, label='Experimental',
+                  elinewidth=1, capsize=2)
+    ctgr.legend()
+    ctagr.set_title('Tartaric Acid')
+    ctagr.set(xlabel='time [min]', ylabel='Tartaric Acid [g/g]')
+    ctagr.plot(ts, sol1.CTA_GR, 'g', label='Unoptimised')
+    ctagr.plot(ts, sol2.CTA_GR, 'r', label='Optimised')
+    ctagr.errorbar(time_array, average.Cap_20_Tartaric_Acid, fmt='bo', yerr=sd.Cap_20_Tartaric_Acid, label='Experimental',
+                  elinewidth=1, capsize=2)
+    ctagr.legend()
+    cmagr.set_title('Malic Acid')
+    cmagr.set(xlabel='time [min]', ylabel='Malic Acid [g/g]')
+    cmagr.plot(ts, sol1.CMA_GR, 'g', label='Unoptimised')
+    cmagr.plot(ts, sol2.CMA_GR, 'r', label='Optimised')
+    cmagr.errorbar(time_array, average.Cap_20_Malic_Acid, fmt='bo', yerr=sd.Cap_20_Malic_Acid, label='Experimental',
+                  elinewidth=1, capsize=2)
+    cmagr.legend()
 
-    fig4, ((mpp, ma, mt), (mta, mma, mls2)) = plt.subplots(3, 2)
+    fig4, ((mpp, ma, mt), (mta, mma, mls2)) = plt.subplots(2, 3)
     fig.suptitle('Lees Phenolics')
-    x.set_title('Active Biomass')
-    x.set(xlabel='time [min]', ylabel='Biomass [g/L]')
-    x.plot(ts, sol1.X, 'g', label='Unoptimised')
-    x.plot(ts, sol2.X, 'r', label='Optimised')
-    x.errorbar(time_array, average.Must_20_Biomass, fmt='bo', yerr=sd.Must_20_Biomass, label='Experimental',
+    mpp.set_title('Polymeric Pigments')
+    mpp.set(xlabel='time [min]', ylabel='Polymeric Pigments[mg/L]')
+    mpp.plot(ts, sol1.MPP_LS, 'g', label='Unoptimised')
+    mpp.plot(ts, sol2.MPP_LS, 'r', label='Optimised')
+    mpp.errorbar(time_array, average.Lees_20_Polymeric_Pigments, fmt='bo', yerr=sd.Lees_20_Polymeric_Pigments, label='Experimental',
                elinewidth=1, capsize=2)
-    x.legend()
+    mpp.legend()
+    ma.set_title('Anthocyanins')
+    ma.set(xlabel='time [min]', ylabel='Anthocyanins[mg/L]')
+    ma.plot(ts, sol1.MA_LS, 'g', label='Unoptimised')
+    ma.plot(ts, sol2.MA_LS, 'r', label='Optimised')
+    ma.errorbar(time_array, average.Lees_20_Anthocyanins, fmt='bo', yerr=sd.Lees_20_Anthocyanins,
+                 label='Experimental',
+                 elinewidth=1, capsize=2)
+    ma.legend()
+    mt.set_title('Tannins')
+    mt.set(xlabel='time [min]', ylabel='Tannins[mg/L]')
+    mt.plot(ts, sol1.MT_LS, 'g', label='Unoptimised')
+    mt.plot(ts, sol2.MT_LS, 'r', label='Optimised')
+    mt.errorbar(time_array, average.Lees_20_Tannins, fmt='bo', yerr=sd.Lees_20_Tannins,
+                label='Experimental',
+                elinewidth=1, capsize=2)
+    mt.legend()
+    mta.set_title('Tartaric Acid')
+    mta.set(xlabel='time [min]', ylabel='Tartaric Acid[g/L]')
+    mta.plot(ts, sol1.MTA_LS, 'g', label='Unoptimised')
+    mta.plot(ts, sol2.MTA_LS, 'r', label='Optimised')
+    mta.errorbar(time_array, average.Lees_20_Tartaric_Acid, fmt='bo', yerr=sd.Lees_20_Tartaric_Acid,
+                label='Experimental',
+                elinewidth=1, capsize=2)
+    mta.legend()
+    mma.set_title('Malic Acid')
+    mma.set(xlabel='time [min]', ylabel='Malic Acid[mg/L]')
+    mma.plot(ts, sol1.MMA_LS, 'g', label='Unoptimised')
+    mma.plot(ts, sol2.MMA_LS, 'r', label='Optimised')
+    mma.errorbar(time_array, average.Lees_20_Malic_Acid, fmt='bo', yerr=sd.Lees_20_Malic_Acid,
+                label='Experimental',
+                elinewidth=1, capsize=2)
+    mma.legend()
+    mls2.set_title('Lees Mass')
+    mls2.set(xlabel='time [min]', ylabel='Lees Mass [g]')
+    mls2.plot(ts, sol1.M_LS, 'g', label='Unoptimised')
+    mls2.plot(ts, sol2.M_LS, 'r', label='Optimised')
+    mls2.legend()
     plt.show()
