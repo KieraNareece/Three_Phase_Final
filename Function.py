@@ -15,6 +15,7 @@ from scipy.optimize import fsolve
 from scipy.optimize import least_squares
 from matplotlib import pyplot as plt
 import random
+import time
 
 
 def vector_to_namespace(vector, var_list):
@@ -526,7 +527,6 @@ def objective(p_vec, p, x, t, time_array, plist, det, exp_vec, stdev_vec, index)
     # experimental values
 
     parameters = vector_to_namespace(p_vec, plist)
-    print(parameters)
     p.param_regression = parameters
 
     a1 = speed_up(p, x)
@@ -537,7 +537,8 @@ def objective(p_vec, p, x, t, time_array, plist, det, exp_vec, stdev_vec, index)
     hold1 = {**a11.__dict__, **a12.__dict__}
     predictions = np.zeros([len(p.interest * det), time_array.size])
     c = 0
-    pred_sample = []
+    pred_sample, exp_hold, stdev_hold = [], [], []
+
     for i in range(0, (len(p.interest) * det)):
         if i % det == 0 and i != 0:
             c = c + 1
@@ -548,60 +549,48 @@ def objective(p_vec, p, x, t, time_array, plist, det, exp_vec, stdev_vec, index)
             predictions[i, j] = hold1[p.interest[c]][time_array[j]]
 
     pred_hold = predictions.ravel()
+
     for i in range(0, len(index)):
         pred_sample.append(pred_hold[index[i]])
-    pred = np.array(pred_sample)
+        exp_hold.append(exp_vec[index[i]])
+        stdev_hold.append(stdev_vec[index[i]])
 
-    obj_hold = (exp_vec-pred)
+    pred, exp_vector, stdev_vector = np.array(pred_sample), np.array(exp_hold), np.array(stdev_hold)
 
-    obj = np.zeros(len(obj_hold))
-    for i in range(0, len(obj_hold)):
-        obj[i] = obj_hold[i]/stdev_vec[i]
+
+    obj = (exp_vector-pred)/stdev_vector
 
     return obj[~np.isnan(obj)]
 
 
-def bill(p, det, time_array):
+def bill(det, time_array):
     # p:            A namespace of parameters
     # det:          The case (returned by residuals)
     # time_array:   A vector of time points for the experimental data
     # This is a function that uses sampling with replacement to generate a new vector of integers, used to sort the
     # predictions, experimental data, and standard deviations in the case of bootstrapping
 
+    from Main_Script import p
     samples = np.arange(0, len(p.interest*det))
     bootstrap_index = random.choices(samples, k=len(p.interest*det*len(time_array)))
 
-    return bootstrap_index
+    return np.array(bootstrap_index, int)
 
 
-def davy_jones(p_vec, p, x, t, time_array, plist, det, exp_vec, stdev_vec, bounds, itt):
-    # p_vec:        A vector of initial guesses for optimisation
-    # p:            A namespace of parameters
-    # x:            A namespaces of initial values for the model
-    # t:            The timespan for the model
-    # time_array:   A vector of time points for the experimental data
-    # plist:        A list of names for the vector of initial guesses
-    # det:          The case being optimised (returned by residuals)
-    # exp_vec:      A vector of experimental values
-    # stdev_vec:    A vector of standard deviations
-    # bounds:       The bounds of the parameters to be optimised
-    # itt:          The number of iterations for the bootstrapping
-    # This function will perform multiple regressions on data that has een sample with replacement and return an array
-    # of the parameters for each iteration
+def regression(index):
 
-    x_array = np.zeros([itt, len(p.param_names_reg)])
-    for i in range(0, itt):
-        new_exp, new_sd = [], []
-        btsp_index = bill(p, det, time_array)
-        for j in range(0, len(btsp_index)):
-            new_exp.append(exp_vec[btsp_index[i]]), new_sd.append([btsp_index[i]])
+    # exp_vec:      A vector of experimental values (returned by residuals)
+    # stdev_vec:    A vector of standard deviations (returned by residuals)
+    # index:        A vector of integers, used to sort the predictions in the case of bootstrapping
+    # This function calculates the solution to the model and finds the weighted difference between predicted values and
+    # experimental values
 
-        a = least_squares(objective, p_vec, method='trf', jac='3-point',bounds=bounds, x_scale='jac',
-                          tr_solver='lsmr', args=(p, x, t, time_array, plist, det, new_exp, new_sd,btsp_index),
-                          verbose=2)
-        x_array[i, :] = a.x
+    from Main_Script import g, bounds, p, x1, ts, time_array, gl, determinate1, exp_vector1, stdev_vector1
+    a1 = least_squares(objective, g, bounds=bounds, jac='3-point', x_scale='jac', loss='soft_l1', tr_solver='lsmr',
+                       args=(p, x1, ts, time_array, gl, determinate1, exp_vector1, stdev_vector1, index),
+                       verbose=0)
 
-    return x_array
+    return a1.x
 
 
 def subplots(ts, time_array, sol1, v1, sol2, v2, average, sd):
@@ -826,3 +815,47 @@ def subplots(ts, time_array, sol1, v1, sol2, v2, average, sd):
     mls2.plot(ts, sol2.M_LS, 'r', label='Optimised')
     mls2.legend()
     plt.show()
+
+
+# def test_func(a, b1, b2):
+#     return np.exp(-b1*a)*np.cos(b2*a)
+#
+#
+# def test_error(b, a, y, sd):
+#     return ((y - (np.exp(-b[0]*a)*np.cos(b[1]*a)))/sd)
+#
+# def test_fit(a, noise, sd):
+#
+#     from Main_Script import initial_p
+#     ls_result = least_squares(test_error, initial_p, args=(a, noise, sd))
+#     return [ls_result.x[0], ls_result.x[1]]
+
+
+# def davy_jones(p_vec, p, x, t, time_array, plist, det, exp_vec, stdev_vec, bounds, itt):
+#     # p_vec:        A vector of initial guesses for optimisation
+#     # p:            A namespace of parameters
+#     # x:            A namespaces of initial values for the model
+#     # t:            The timespan for the model
+#     # time_array:   A vector of time points for the experimental data
+#     # plist:        A list of names for the vector of initial guesses
+#     # det:          The case being optimised (returned by residuals)
+#     # exp_vec:      A vector of experimental values
+#     # stdev_vec:    A vector of standard deviations
+#     # bounds:       The bounds of the parameters to be optimised
+#     # itt:          The number of iterations for the bootstrapping
+#     # This function will perform multiple regressions on data that has een sample with replacement and return an array
+#     # of the parameters for each iteration
+#
+#     x_array = np.zeros([itt, len(p.param_names_reg)])
+#     for i in range(0, itt):
+#         new_exp, new_sd = [], []
+#         btsp_index = bill(p, det, time_array)
+#         for j in range(0, len(btsp_index)):
+#             new_exp.append(exp_vec[btsp_index[i]]), new_sd.append([btsp_index[i]])
+#
+#         a = least_squares(objective, p_vec, method='trf', jac='3-point',bounds=bounds, x_scale='jac',
+#                           tr_solver='lsmr', args=(p, x, t, time_array, plist, det, new_exp, new_sd,btsp_index),
+#                           verbose=2)
+#         x_array[i, :] = a.x
+#
+#     return x_array

@@ -59,6 +59,7 @@ up = types.SimpleNamespace(k_d=9.7e-06, u_max=0.001, k_pp=6.000e-06, PI_LSPP=0.5
 
 
 # The following is a stoichiometric matrix for the three-phase fermentation vessel
+
 p.SM = types.SimpleNamespace(X=np.array([0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1]),
                              N=np.array([0, -p.param.Y_NX, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
                              S=np.array([-p.param.Y_ES*p.param.B, -p.param.Y_ES, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
@@ -133,23 +134,112 @@ time_array[10] = 13019
 # Case determines the type of optimisation. The first element is the cultivar, the second is the temperature of interest
 # the options for the first element are 'CS', 'SH', 'ME', or 'n/a'; the options ofr the second element are '20', '25',
 # '28' or 'n/a'
-case = ['n/a', '20']
+case1, case2, case3, case4, case5, case6, case7, case8, case9 = ['CS', '20'], ['CS', '25'], ['CS', '28'], ['SH', '20'], ['SH', '25'], ['SH', '28'], ['ME', '20'], ['ME', '25'], ['ME', '28']
+
 
 # The following generates two vectors containing the experimental values and standard deviations for each point. Based
 # on the case
-exp_vector, stdev_vector, determinate = residuals(case, data, time_array, sd, p)
+exp_vector1, stdev_vector1, determinate1 = residuals(case1, data, time_array, sd, p)
+exp_vector2, stdev_vector2, determinate2 = residuals(case2, data, time_array, sd, p)
+exp_vector3, stdev_vector3, determinate3 = residuals(case3, data, time_array, sd, p)
+exp_vector4, stdev_vector4, determinate4 = residuals(case4, data, time_array, sd, p)
+exp_vector5, stdev_vector5, determinate5 = residuals(case5, data, time_array, sd, p)
+exp_vector6, stdev_vector6, determinate6 = residuals(case6, data, time_array, sd, p)
+exp_vector7, stdev_vector7, determinate7 = residuals(case7, data, time_array, sd, p)
+exp_vector8, stdev_vector8, determinate8 = residuals(case8, data, time_array, sd, p)
+exp_vector9, stdev_vector9, determinate9 = residuals(case9, data, time_array, sd, p)
 
 # The following name space contains the initial values for the system of Ordinary Differential Equations
-x = types.SimpleNamespace(X=0.25, N=average.Must_20_Nitrogen[0], S=average.Must_20_Sugar[0], CO2=0, E=0, GL=0, SC=0.015,
-                          M_LS=0.001, CPP=average.Must_20_Polymeric_Pigments[0], MPP_LS=0.00,
-                          CA=average.Must_20_Anthocyanins[0], CA_GR=1009.6, MA_LS=0, CT=average.Must_20_Tannins[0],
-                          CT_GR=5384.49, MT_LS=0, CTA=average.Must_20_Tartaric_Acid[0], CTA_GR=3, MTA_LS=0,
-                          CMA=average.Must_20_Malic_Acid[0], CMA_GR=2.11, MMA_LS=0)
+x1 = types.SimpleNamespace(X=0.25, N=average.Must_CS_20_Nitrogen[0], S=average.Must_CS_20_Sugar[0], CO2=0, E=0, GL=0,
+                           SC=0.015, M_LS=0.001, CPP=average.Must_CS_20_Polymeric_Pigments[0], MPP_LS=0.00,
+                           CA=average.Must_CS_20_Anthocyanins[0], CA_GR=1009.6, MA_LS=0,
+                           CT=average.Must_CS_20_Tannins[0], CT_GR=5384.49, MT_LS=0,
+                           CTA=average.Must_CS_20_Tartaric_Acid[0], CTA_GR=3, MTA_LS=0,
+                           CMA=average.Must_CS_20_Malic_Acid[0], CMA_GR=2.11, MMA_LS=0)
 
-# Get initial values into vector form
-x_0 = namespace_to_vector(x, p.svar_list)
+x2 = types.SimpleNamespace(X=0.25, N=average.Must_CS_25_Nitrogen[0], S=average.Must_CS_25_Sugar[0], CO2=0, E=0, GL=0,
+                           SC=0.015, M_LS=0.001, CPP=average.Must_CS_25_Polymeric_Pigments[0], MPP_LS=0.00,
+                           CA=average.Must_CS_25_Anthocyanins[0], CA_GR=1009.6, MA_LS=0,
+                           CT=average.Must_CS_25_Tannins[0], CT_GR=5384.49, MT_LS=0,
+                           CTA=average.Must_CS_25_Tartaric_Acid[0], CTA_GR=3, MTA_LS=0,
+                           CMA=average.Must_CS_25_Malic_Acid[0], CMA_GR=2.11, MMA_LS=0)
+
+x3 = types.SimpleNamespace(X=0.25, N=average.Must_CS_28_Nitrogen[0], S=average.Must_CS_28_Sugar[0], CO2=0, E=0, GL=0,
+                           SC=0.015, M_LS=0.001, CPP=average.Must_CS_28_Polymeric_Pigments[0], MPP_LS=0.00,
+                           CA=average.Must_CS_28_Anthocyanins[0], CA_GR=1009.6, MA_LS=0,
+                           CT=average.Must_CS_28_Tannins[0], CT_GR=5384.49, MT_LS=0,
+                           CTA=average.Must_CS_28_Tartaric_Acid[0], CTA_GR=3, MTA_LS=0,
+                           CMA=average.Must_CS_28_Malic_Acid[0], CMA_GR=2.11, MMA_LS=0)
+
+x4 = types.SimpleNamespace(X=0.25, N=average.Must_SH_20_Nitrogen[0], S=average.Must_SH_20_Sugar[0], CO2=0, E=0, GL=0,
+                           SC=0.015, M_LS=0.001, CPP=average.Must_SH_20_Polymeric_Pigments[0], MPP_LS=0.00,
+                           CA=average.Must_SH_20_Anthocyanins[0], CA_GR=1009.6, MA_LS=0,
+                           CT=average.Must_SH_20_Tannins[0], CT_GR=5384.49, MT_LS=0,
+                           CTA=average.Must_SH_20_Tartaric_Acid[0], CTA_GR=3, MTA_LS=0,
+                           CMA=average.Must_SH_20_Malic_Acid[0], CMA_GR=2.11, MMA_LS=0)
+
+x5 = types.SimpleNamespace(X=0.25, N=average.Must_SH_25_Nitrogen[0], S=average.Must_SH_25_Sugar[0], CO2=0, E=0, GL=0,
+                           SC=0.015, M_LS=0.001, CPP=average.Must_SH_25_Polymeric_Pigments[0], MPP_LS=0.00,
+                           CA=average.Must_SH_25_Anthocyanins[0], CA_GR=1009.6, MA_LS=0,
+                           CT=average.Must_SH_25_Tannins[0], CT_GR=5384.49, MT_LS=0,
+                           CTA=average.Must_SH_25_Tartaric_Acid[0], CTA_GR=3, MTA_LS=0,
+                           CMA=average.Must_SH_25_Malic_Acid[0], CMA_GR=2.11, MMA_LS=0)
+
+x6 = types.SimpleNamespace(X=0.25, N=average.Must_SH_28_Nitrogen[0], S=average.Must_SH_28_Sugar[0], CO2=0, E=0, GL=0,
+                           SC=0.015, M_LS=0.001, CPP=average.Must_SH_28_Polymeric_Pigments[0], MPP_LS=0.00,
+                           CA=average.Must_SH_28_Anthocyanins[0], CA_GR=1009.6, MA_LS=0,
+                           CT=average.Must_SH_28_Tannins[0], CT_GR=5384.49, MT_LS=0,
+                           CTA=average.Must_SH_28_Tartaric_Acid[0], CTA_GR=3, MTA_LS=0,
+                           CMA=average.Must_SH_28_Malic_Acid[0], CMA_GR=2.11, MMA_LS=0)
+
+x7 = types.SimpleNamespace(X=0.25, N=average.Must_ME_20_Nitrogen[0], S=average.Must_ME_20_Sugar[0], CO2=0, E=0, GL=0,
+                           SC=0.015, M_LS=0.001, CPP=average.Must_ME_20_Polymeric_Pigments[0], MPP_LS=0.00,
+                           CA=average.Must_ME_20_Anthocyanins[0], CA_GR=1009.6, MA_LS=0,
+                           CT=average.Must_ME_20_Tannins[0], CT_GR=5384.49, MT_LS=0,
+                           CTA=average.Must_ME_20_Tartaric_Acid[0], CTA_GR=3, MTA_LS=0,
+                           CMA=average.Must_ME_20_Malic_Acid[0], CMA_GR=2.11, MMA_LS=0)
+
+x8 = types.SimpleNamespace(X=0.25, N=average.Must_ME_25_Nitrogen[0], S=average.Must_ME_25_Sugar[0], CO2=0, E=0, GL=0,
+                           SC=0.015, M_LS=0.001, CPP=average.Must_ME_25_Polymeric_Pigments[0], MPP_LS=0.00,
+                           CA=average.Must_ME_25_Anthocyanins[0], CA_GR=1009.6, MA_LS=0,
+                           CT=average.Must_ME_25_Tannins[0], CT_GR=5384.49, MT_LS=0,
+                           CTA=average.Must_ME_25_Tartaric_Acid[0], CTA_GR=3, MTA_LS=0,
+                           CMA=average.Must_ME_25_Malic_Acid[0], CMA_GR=2.11, MMA_LS=0)
+
+x9 = types.SimpleNamespace(X=0.25, N=average.Must_ME_28_Nitrogen[0], S=average.Must_ME_28_Sugar[0], CO2=0, E=0, GL=0,
+                           SC=0.015, M_LS=0.001, CPP=average.Must_ME_28_Polymeric_Pigments[0], MPP_LS=0.00,
+                           CA=average.Must_ME_28_Anthocyanins[0], CA_GR=1009.6, MA_LS=0,
+                           CT=average.Must_ME_28_Tannins[0], CT_GR=5384.49, MT_LS=0,
+                           CTA=average.Must_ME_28_Tartaric_Acid[0], CTA_GR=3, MTA_LS=0,
+                           CMA=average.Must_ME_28_Malic_Acid[0], CMA_GR=2.11, MMA_LS=0)
 
 # Get lower and upper bounds into vectors and into a tuple
 lower_bounds = namespace_to_vector(lp, p.param_names_reg)
 upper_bounds = namespace_to_vector(up, p.param_names_reg)
 bounds = (lower_bounds, upper_bounds)
+
+# A new name space for parameters is generated for the optimisation
+gs = p.param_regression
+gl = p.param_names_reg
+g = (namespace_to_vector(gs, gl))
+
+
+
+
+# initial_p = [1, 1]
+# a = np.linspace(0, 10, num=101)
+# b1 = 0.5
+# b2 = 5
+# #
+# normal = test_func(a, b1, b2)
+# s = (test_func(a, b1, b2))*0.1
+#
+# numsam = 100
+# noise = np.zeros((numsam, len(a)))
+# for i in range(0, numsam):
+#     rns = np.random.normal(size=len(a), scale=0.1)
+#     noise[i, :] = normal + rns
+#
+# a_tile = np.tile(normal, (numsam, 1))
+# sd_tile = np.tile(s, (numsam, 1))
+
